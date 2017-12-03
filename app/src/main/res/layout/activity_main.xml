@@ -99,7 +99,7 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_margin="36dp"
-        android:src="@drawable/greentea_1000px"/>
+        android:src="@drawable/greentea"/>
 
     <Spinner
         android:id="@+id/spinner_tea_profiles"
