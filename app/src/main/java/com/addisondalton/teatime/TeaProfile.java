@@ -1,5 +1,6 @@
 package com.addisondalton.teatime;
 
+import com.orm.SugarApp;
 import com.orm.SugarRecord;
 
 import java.util.Locale;
@@ -15,7 +16,6 @@ public class TeaProfile extends SugarRecord<TeaProfile> {
 
     //default constructor
     public TeaProfile(){
-
     }
 
     public TeaProfile(String name, int milliseconds){

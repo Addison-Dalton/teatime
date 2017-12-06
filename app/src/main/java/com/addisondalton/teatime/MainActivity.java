@@ -1,52 +1,71 @@
 package com.addisondalton.teatime;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    //list to hold the spinner drop down elements
-    List<String> teaProfilesStrings = new ArrayList<>();
+public class MainActivity extends AppCompatActivity implements SpinnerClickListener {
+    TeaProfileAdapter teaProfileAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TeaProfile.deleteAll(TeaProfile.class); //TODO I think this is necessary to clear the database before using the app again
 
         //only add the default tea profiles if there are no tea profiles
         if(TeaProfile.listAll(TeaProfile.class).isEmpty()){
             setDefaultTeaProfiles(); //adds stored teas to database //TODO consider renaming
         }
 
-        getTeaProfileStrings();
-        Spinner teaProfileSpinner = findViewById(R.id.spinner_tea_profiles);
-        teaProfileSpinner.setOnItemSelectedListener(this);
+        setTeaProfileAdapter();
+    }
 
-        ArrayAdapter<String> teaProfileArrayAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, teaProfilesStrings);
-        teaProfileSpinner.setAdapter(teaProfileArrayAdapter);
+    //detects long click on an item within the spinner containing tea profiles. Presents a delete
+    //button to delete the profile
+    @Override
+    public void onItemLongClicked(final View view){
+        LongClickSpinner teaProfileSpinner = findViewById(R.id.spinner_tea_profiles);
+        final Button deleteButton = view.findViewById(R.id.btn_delete);
+        final int position = (int) view.getTag(R.string.spinner_index_tag);
 
-
+        view.findViewById(R.id.tv_spinner_tea_item).animate().xBy(-170f).setDuration(250); //TODO fiddle with this animation
+        deleteButton.setVisibility(View.VISIBLE);
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteTeaProfile(teaProfileAdapter.getItem(position));
+            }
+        });
 
     }
+
+    //detects a normal click on an item and sets it as the spinner's selected item
+    @Override
+    public void onItemClicked(final View view){
+        LongClickSpinner teaProfileSpinner = findViewById(R.id.spinner_tea_profiles);
+        teaProfileSpinner.onDetachedFromWindow();
+        final int position = (int) view.getTag(R.string.spinner_index_tag);
+        teaProfileSpinner.setSelection(position);
+    }
+    /**
+     * MAY NOT NEED
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-        //TODO determine which profile the user selected
         //TODO if a tea profile, start the timer
         //TODO if new tea profile, allow them to enter new tea profile
         //TODO if just a custom time, allow them to enter a time
+
+        Log.i("parent", parent.toString());
+        Log.i("position", Integer.toString(position));
+        Log.i("id", Long.toString(id));
+
     }
     public void onNothingSelected(AdapterView<?> arg0){
 
-    }
+    }**/
+
 
     //method that add all the default tea profiles to the sugar orm database
     private void setDefaultTeaProfiles(){
@@ -56,16 +75,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         new TeaProfile("Herbal Tea", 60000).save();
     }
 
-    //method takes all the teaProfiles from a list and then calls each of their getFullString methods to produce a full string to be used a spinner dropdown element
-    private void getTeaProfileStrings(){
-        //list of all stored teaProfiles
-        List<TeaProfile> teaProfiles = TeaProfile.listAll(TeaProfile.class);
-
-        for(TeaProfile teaProfile : teaProfiles){
-            teaProfilesStrings.add(teaProfile.getFullString());
-        }
+    //populates the spinner with items from a list of all tea profiles,
+    private void setTeaProfileAdapter(){
+        Spinner teaProfileSpinner = findViewById(R.id.spinner_tea_profiles);
+        teaProfileAdapter =  new TeaProfileAdapter(this, TeaProfile.listAll(TeaProfile.class), this);
+        teaProfileSpinner.setAdapter(teaProfileAdapter);
     }
-    //TODO change the spinner color background, green or the deep red
+
+    //takes a tea profile and deletes it from the database, then calls a method to reset the spinner
+    private void deleteTeaProfile(TeaProfile teaProfile){
+        teaProfile.delete();
+        setTeaProfileAdapter();
+    }
+
+    //TODO fiddle with how I want the text to react with the delete button present. May just hide text altogether.
+    //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
     //TODO add first option of spinner to be "select tea profile" make sure it can't be chosen as actual option
     //TODO ability to add custom tea profile, place at end of spinner
     //TODO ability to just input a time, place at end of spinner

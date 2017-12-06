@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,15 +29,17 @@ public class TeaProfileAdapter extends ArrayAdapter<TeaProfile> {
         this.teaProfile = getItem(position);
         this.teaProfileString = this.teaProfile.getFullString();
 
+        //check if an existing view is being reused, otherwise inflate the view
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false);
         }
 
         TextView tv_teaProfile = convertView.findViewById(R.id.tv_spinner_tea_item);
-        Button deleteButton = convertView.findViewById(R.id.btn_delete); //TODO may not need this
         tv_teaProfile.setText(teaProfileString);
 
-        convertView.setTag(R.string.click_tag, position);
+        //sets the tag of the convertView as the position in the spinner of the tea profile.
+        //the tag is later called to figure which tea profile is being selected
+        convertView.setTag(R.string.spinner_index_tag, position);
         convertView.setClickable(false);
         convertView.setLongClickable(false);
 
@@ -49,16 +50,20 @@ public class TeaProfileAdapter extends ArrayAdapter<TeaProfile> {
         this.teaProfile = getItem(position);
         this.teaProfileString = this.teaProfile.getFullString();
 
+        //check if an existing view is being reused, otherwise inflate the view
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.spinner_item, parent, false);
         }
 
         TextView tv_teaProfile = convertView.findViewById(R.id.tv_spinner_tea_item);
-        Button deleteButton = convertView.findViewById(R.id.btn_delete); //TODO may not need this
         tv_teaProfile.setText(teaProfileString);
 
-        convertView.setTag(R.string.click_tag, position);
+        //sets the tag of the convertView as the position in the spinner of the tea profile.
+        //the tag is later called to figure which tea profile is being selected
+        convertView.setTag(R.string.spinner_index_tag, position);
 
+        //listens for a click on this view (spinner item) and calls the custom spinnerClickListener
+        //for normal and long clicks.
         convertView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -68,6 +73,8 @@ public class TeaProfileAdapter extends ArrayAdapter<TeaProfile> {
             }
         });
 
+        //listens for a click on this view (spinner item) and calls the custom spinnerClickListener
+        //for normal and long clicks.
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
