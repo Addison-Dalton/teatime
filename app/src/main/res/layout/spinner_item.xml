@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="16dp">
+
+    <FrameLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+        android:layout_margin="16dp">
 
-    <TextView
-        android:id="@+id/tv_spinner_tea_item"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="3"
-        android:layout_margin="16dp"
-        android:textSize="16sp"
-        android:text="Black Tea" />
+        <TextView
+            android:id="@+id/tv_spinner_tea_item"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="Black Tea"
+            android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/btn_delete"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="@string/btn_delete"
-        android:visibility="gone"/>
+        <Button
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="end|center_vertical"
+            android:backgroundTint="@color/deleteButton"
+            android:text="@string/btn_delete"
+            android:textSize="20sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+
 </LinearLayout>
