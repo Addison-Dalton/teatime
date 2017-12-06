@@ -21,7 +21,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TeaProfile.deleteAll(TeaProfile.class); //TODO I think this is necessary to clear the database before using the app again
-        setDefaultTeaProfiles(); //adds stored teas to database //TODO consider renaming
+
+        //only add the default tea profiles if there are no tea profiles
+        if(TeaProfile.listAll(TeaProfile.class).isEmpty()){
+            setDefaultTeaProfiles(); //adds stored teas to database //TODO consider renaming
+        }
+
         getTeaProfileStrings();
         Spinner teaProfileSpinner = findViewById(R.id.spinner_tea_profiles);
         teaProfileSpinner.setOnItemSelectedListener(this);
