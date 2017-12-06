@@ -4,4 +4,6 @@
     <string name="tea_status"><u>Status</u></string>
     <string name="time_remaining"><u>Time</u></string>
     <string name="btn_start">Start</string>
+    <string name="btn_delete">Delete</string>
+    <string name="click_tag"></string>
 </resources>
