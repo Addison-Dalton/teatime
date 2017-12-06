@@ -100,15 +100,27 @@
         android:layout_height="300dp"
         android:layout_margin="36dp"
         android:src="@drawable/greentea"/>
-
+<!--
     <Spinner
         android:id="@+id/spinner_tea_profiles"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginBottom="16dp"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        android:popupBackground="@color/colorPrimary"/>
 
+        -->
+    <com.addisondalton.teatime.LongClickSpinner
+        android:id="@+id/spinner_tea_profiles"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:spinnerMode="dropdown"
+        android:popupBackground="@color/colorPrimary">
+
+    </com.addisondalton.teatime.LongClickSpinner>
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
