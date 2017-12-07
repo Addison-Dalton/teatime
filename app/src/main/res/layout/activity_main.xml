@@ -97,8 +97,11 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
-        android:layout_margin="36dp"
+        android:layout_height="275dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:layout_marginBottom="10dp"
         android:src="@drawable/greentea"/>
 <!--
     <Spinner
@@ -129,4 +132,14 @@
         android:padding="16dp"
         android:textSize="20sp"
         android:text="@string/btn_start" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_gravity="end"
+        android:textSize="25sp"
+        android:text="@string/btn_add_tea_profile" />
 </LinearLayout>
