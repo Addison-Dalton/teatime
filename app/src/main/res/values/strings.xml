@@ -2,8 +2,9 @@
     <string name="app_name">Tea Time</string>
     <string name="tea_profile"><u>Tea Profile</u></string>
     <string name="tea_status"><u>Status</u></string>
-    <string name="time_remaining"><u>Time</u></string>
+    <string name="time_remaining"><u>Brew Time</u></string>
     <string name="btn_start">Start</string>
     <string name="btn_delete">Delete</string>
     <string name="spinner_index_tag"></string>
+    <string name="btn_add_tea_profile">+</string>
 </resources>
