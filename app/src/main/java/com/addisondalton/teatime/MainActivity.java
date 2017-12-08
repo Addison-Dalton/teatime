@@ -1,11 +1,20 @@
 package com.addisondalton.teatime;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SpinnerClickListener {
     TeaProfileAdapter teaProfileAdapter;
@@ -20,6 +29,14 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         }
 
         setTeaProfileAdapter();
+
+        Button showAddTeaProfilePopup = findViewById(R.id.btn_show_add_tea_profile_popup);
+        showAddTeaProfilePopup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPopup();
+            }
+        });
     }
 
     //detects long click on an item within the spinner containing tea profiles. Presents a delete
@@ -86,6 +103,38 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     private void deleteTeaProfile(TeaProfile teaProfile){
         teaProfile.delete();
         setTeaProfileAdapter();
+    }
+
+    private void showPopup(){
+        LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        View addTeaProfilePopup = layoutInflater.inflate(R.layout.add_tea_profile_popup, null);
+        final PopupWindow teaProfilePopupWindow = new PopupWindow(addTeaProfilePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
+
+        teaProfilePopupWindow.setTouchable(true);
+        teaProfilePopupWindow.setFocusable(true);
+
+        teaProfilePopupWindow.showAtLocation(addTeaProfilePopup, Gravity.CENTER, 0, 0);
+
+        final EditText teaName = addTeaProfilePopup.findViewById(R.id.et_popup_tea_name);
+        EditText teaMinutes = addTeaProfilePopup.findViewById(R.id.et_popup_minutes);
+        EditText teaSeconds = addTeaProfilePopup.findViewById(R.id.et_popup_seconds);
+        Button addTeaProfile = addTeaProfilePopup.findViewById(R.id.btn_popup_add_tea);
+        Button cancelAddTeaProfile = addTeaProfilePopup.findViewById(R.id.btn_popup_cancel);
+
+        addTeaProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(getApplicationContext(), "Tea added.", Toast.LENGTH_SHORT).show();
+                teaProfilePopupWindow.dismiss();
+            }
+        });
+
+        cancelAddTeaProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                teaProfilePopupWindow.dismiss();
+            }
+        });
     }
 
     //TODO fiddle with how I want the text to react with the delete button present. May just hide text altogether.

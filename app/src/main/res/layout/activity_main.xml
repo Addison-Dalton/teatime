@@ -134,7 +134,7 @@
         android:text="@string/btn_start" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/btn_show_add_tea_profile_popup"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginTop="4dp"

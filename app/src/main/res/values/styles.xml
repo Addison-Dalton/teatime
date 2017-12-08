@@ -9,7 +9,8 @@
         <item name="android:windowBackground">@color/colorwindowBackground</item>
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="colorButtonNormal">@color/colorPrimary</item>
-        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlNormal">@color/colorPrimary</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
     </style>
 
