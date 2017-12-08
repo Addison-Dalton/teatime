@@ -9,8 +9,11 @@
     <string name="btn_add_tea_profile">+</string>
     <string name="popup_tea_name_hint">Enter a tea…</string>
     <string name="popup_title">Add Tea Profile</string>
-    <string name="popup_minutes">MM</string>
-    <string name="popup_seconds">SS</string>
+    <string name="popup_minutes_hint">MM</string>
+    <string name="popup_seconds_hint">SS</string>
     <string name="popup_btn_add_tea">Add Tea</string>
     <string name="popup_btn_cancel">Cancel</string>
+    <string name="popup_time_label">(Brewing Time)</string>
+    <string name="max_time_value">59</string>
+    <string name="default_time_value">00</string>
 </resources>
