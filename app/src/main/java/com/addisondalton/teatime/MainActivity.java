@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -106,35 +108,102 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     }
 
     private void showPopup(){
+        //LayoutInflater
         LayoutInflater layoutInflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
         View addTeaProfilePopup = layoutInflater.inflate(R.layout.add_tea_profile_popup, null);
-        final PopupWindow teaProfilePopupWindow = new PopupWindow(addTeaProfilePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
 
+        //PopupWindow
+        final PopupWindow teaProfilePopupWindow = new PopupWindow(addTeaProfilePopup, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,true);
         teaProfilePopupWindow.setTouchable(true);
         teaProfilePopupWindow.setFocusable(true);
+        teaProfilePopupWindow.showAtLocation(addTeaProfilePopup, Gravity.CENTER, 0, -200);
 
-        teaProfilePopupWindow.showAtLocation(addTeaProfilePopup, Gravity.CENTER, 0, 0);
-
+        //View variables
         final EditText teaName = addTeaProfilePopup.findViewById(R.id.et_popup_tea_name);
-        EditText teaMinutes = addTeaProfilePopup.findViewById(R.id.et_popup_minutes);
-        EditText teaSeconds = addTeaProfilePopup.findViewById(R.id.et_popup_seconds);
+        final EditText teaMinutes = addTeaProfilePopup.findViewById(R.id.et_popup_minutes);
+        final EditText teaSeconds = addTeaProfilePopup.findViewById(R.id.et_popup_seconds);
         Button addTeaProfile = addTeaProfilePopup.findViewById(R.id.btn_popup_add_tea);
         Button cancelAddTeaProfile = addTeaProfilePopup.findViewById(R.id.btn_popup_cancel);
 
+        //check that minutes and seconds are within acceptable bounds
+        checkTimeFormat(teaMinutes);
+        checkTimeFormat(teaSeconds);
+
+        //onClickListener for 'Add Tea Profile' button, checks for valid tea profile, then adds it to the tea profile database
+        //also display a toast that the tea has been added.
         addTeaProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getApplicationContext(), "Tea added.", Toast.LENGTH_SHORT).show();
-                teaProfilePopupWindow.dismiss();
+                String teaNameString = teaName.getText().toString();
+
+                if(!teaNameString.matches("")){ //check that a tea's name is NOT empty
+                    if(teaMinutes.getText().toString().matches("")){ //if minutes has no value, set it to 00
+                        teaMinutes.setText(R.string.default_time_value);
+                    }
+                    if(teaSeconds.getText().toString().matches("")){ //if seconds has no value, set it to 00
+                        teaSeconds.setText(R.string.default_time_value);
+                    }
+
+                    //checks that both minutes and seconds are NOT 00
+                    if(!teaMinutes.getText().toString().matches(getString(R.string.default_time_value)) ||
+                            !teaSeconds.getText().toString().matches(getString(R.string.default_time_value))){
+
+                        //TODO add tea profile to database, before adding do following:
+                        //TODO convert any 0d to just have the digit without leading 0
+                        //TODO convery minutes and seconds into milliseconds.
+                        Toast.makeText(getApplicationContext(), "Tea added.", Toast.LENGTH_SHORT).show();
+                        teaProfilePopupWindow.dismiss();
+                    }else{ //show toast if both minutes and seconds are 00
+                        Toast.makeText(getApplicationContext(), "Please input a time!",Toast.LENGTH_SHORT).show();
+                    }
+                }else { //show toast if tea name is empty
+                    Toast.makeText(getApplicationContext(), "Please input a tea name!",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
+        //cancel button onClickListener, simply dismisses the popup window.
         cancelAddTeaProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 teaProfilePopupWindow.dismiss();
             }
         });
+    }
+
+    /**
+     *
+     * this method is called to check that both the minutes and seconds of an added tea profile are
+     * within acceptable bounds, that being less then 60. This is done by using a textChangedListener
+     */
+    private void checkTimeFormat(final EditText time){
+        time.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editable.toString().matches("")){ //to avoid NumberFormatException if the user was to return the string to ""
+                    int intOfTime = Integer.parseInt(editable.toString());
+
+                    if(intOfTime > 59){
+                        time.removeTextChangedListener(this);
+                        time.setText(R.string.max_time_value);
+                        time.setSelection(time.getText().length()); //set cursor to end of string
+                        time.addTextChangedListener(this);
+                    }
+                }
+            }
+        });
+
+
     }
 
     //TODO fiddle with how I want the text to react with the delete button present. May just hide text altogether.
