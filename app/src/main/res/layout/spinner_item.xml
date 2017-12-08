@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:singleLine="true"
             android:text="Black Tea"
             android:textSize="20sp" />
 
