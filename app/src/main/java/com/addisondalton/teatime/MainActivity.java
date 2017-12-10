@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements SpinnerClickListener {
@@ -68,23 +69,6 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         final int position = (int) view.getTag(R.string.spinner_index_tag);
         teaProfileSpinner.setSelection(position);
     }
-    /**
-     * MAY NOT NEED
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id){
-        //TODO if a tea profile, start the timer
-        //TODO if new tea profile, allow them to enter new tea profile
-        //TODO if just a custom time, allow them to enter a time
-
-        Log.i("parent", parent.toString());
-        Log.i("position", Integer.toString(position));
-        Log.i("id", Long.toString(id));
-
-    }
-    public void onNothingSelected(AdapterView<?> arg0){
-
-    }**/
-
 
     //method that add all the default tea profiles to the sugar orm database
     private void setDefaultTeaProfiles(){
@@ -148,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                     if(!teaMinutes.getText().toString().matches(getString(R.string.default_time_value)) ||
                             !teaSeconds.getText().toString().matches(getString(R.string.default_time_value))){
 
-                        //TODO add tea profile to database, before adding do following:
-                        //TODO convert any 0d to just have the digit without leading 0
-                        //TODO convery minutes and seconds into milliseconds.
+                        //call method to add tea to database
+                        addTeaToDatabase(teaName.getText().toString(),Integer.parseInt(teaMinutes.getText().toString()), Integer.parseInt(teaSeconds.getText().toString()));
+                        //show toast that tea was added
                         Toast.makeText(getApplicationContext(), "Tea added.", Toast.LENGTH_SHORT).show();
                         teaProfilePopupWindow.dismiss();
                     }else{ //show toast if both minutes and seconds are 00
@@ -205,12 +189,92 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
 
 
     }
+    //adds tea to the database, takes the name, and time in minutes and seconds as String parameters.
+    //converts minutes and seconds into milliseconds as an int before adding to database
+    private void addTeaToDatabase(String teaName, int minutes, int seconds){
+        int milliseconds = (minutes * 60000) + (seconds * 1000);
+        new TeaProfile(teaName, milliseconds).save();
+        setTeaProfileAdapter();
+    }
 
+    //sets the text for the TextViews associated with showing the tea profile's name and brew time.
+    //this is called when the user starts the timer
+    private void displayTeaProfile(String teaName, String time){
+        TextView teaProfileSelected = findViewById(R.id.tv_tea_profile_value);
+        TextView brewTime = findViewById(R.id.tv_time_remaining_value);
+
+        teaProfileSelected.setText(teaName);
+        brewTime.setText(time);
+    }
+    //MAJOR ITEMS
     //TODO fiddle with how I want the text to react with the delete button present. May just hide text altogether.
     //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
-    //TODO add first option of spinner to be "select tea profile" make sure it can't be chosen as actual option
-    //TODO ability to add custom tea profile, place at end of spinner
-    //TODO ability to just input a time, place at end of spinner
+    //TODO add custom tea profile to database
     //TODO timer functionality
     //TODO start button functionality
+    
+    public class StartTimer{
+        Button timerButton;
+        int state;
+        private static final int TIMER_FINISHED = 0;
+        private static final int TIMER_RUNNING = 1;
+        private static final int TIMER_PAUSED = 2;
+        private static final int TIMER_NOT_RUNNING = 3;
+        public StartTimer(Button timerButton){
+            this.timerButton = timerButton;
+            addClickListener();
+        }
+
+        private void addClickListener(){
+            this.timerButton.setOnClickListener(new View.OnClickListener() {
+                //checks the state of the button onClick. Example: If the timer is not running (TIMER_NOT_RUNNING)
+                //then the click will start the timer and set the new button's state to TIMER_RUNNING
+                @Override
+                public void onClick(View view) {
+                    switch (StartTimer.this.state){
+                        case TIMER_FINISHED:
+                            break;
+                        case TIMER_RUNNING:
+                            break;
+                        case TIMER_PAUSED:
+                            break;
+                        case TIMER_NOT_RUNNING:
+                            StartTimer.this.setState(TIMER_RUNNING);
+                            StartTimer.this.timerButton.setText(R.string.btn_pause);
+                            break;
+                    }
+                }
+            });
+
+            this.timerButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+
+                    return true;
+                }
+            });
+        }
+
+        private void setState(int state){
+            this.state = state;
+        }
+
+        //getter methods for various states of button
+        public int TIMER_FINISHED(){
+            return TIMER_FINISHED;
+        }
+
+        public int TIMER_RUNNING(){
+            return TIMER_RUNNING;
+        }
+
+        public int TIMER_PAUSED(){
+            return TIMER_PAUSED;
+        }
+
+        public int TIMER_NOT_RUNNING(){
+            return TIMER_NOT_RUNNING;
+        }
+    }
 }
+
