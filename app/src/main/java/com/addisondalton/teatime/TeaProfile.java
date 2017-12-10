@@ -27,7 +27,7 @@ public class TeaProfile extends SugarRecord<TeaProfile> {
         return (this.name + ", " + getMinutesAndSeconds());
     }
 
-    private String getMinutesAndSeconds(){
+    public String getMinutesAndSeconds(){
         return String.format(Locale.US, "%2d:%02d", TimeUnit.MILLISECONDS.toMinutes(this.milliseconds),
                                                                                 TimeUnit.MILLISECONDS.toSeconds(this.milliseconds) -
                                                                                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(this.milliseconds)));
