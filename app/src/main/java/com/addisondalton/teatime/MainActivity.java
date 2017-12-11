@@ -19,6 +19,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.addisondalton.teatime.TimerButton.TIMER_FINISHED;
+import static com.addisondalton.teatime.TimerButton.TIMER_NOT_RUNNING;
+import static com.addisondalton.teatime.TimerButton.TIMER_PAUSED;
+import static com.addisondalton.teatime.TimerButton.TIMER_RUNNING;
+
 public class MainActivity extends AppCompatActivity implements SpinnerClickListener {
     TeaProfileAdapter teaProfileAdapter;
     @Override
@@ -32,12 +37,64 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         }
 
         setTeaProfileAdapter();
-
         Button showAddTeaProfilePopup = findViewById(R.id.btn_show_add_tea_profile_popup);
+        final Spinner teaProfileSpinner = findViewById(R.id.spinner_tea_profiles);
+        final TextView teaProfileName = findViewById(R.id.tv_tea_profile_value);
+        final TextView teaBrewTime = findViewById(R.id.tv_time_remaining_value);
+        final TextView teaBrewStatus = findViewById(R.id.tv_tea_status_value);
+
         showAddTeaProfilePopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPopup();
+            }
+        });
+
+        //new TimerButton, takes a button as parameter in constructor.
+        //this class simply keeps up with the various states the timer button can be in.
+        final TimerButton teaTimerButton = new TimerButton((Button) findViewById(R.id.btn_timer));
+        teaTimerButton.setState(TIMER_NOT_RUNNING);
+        teaTimerButton.getButton().setOnClickListener(new View.OnClickListener() {
+
+            //TODO probably need to add checks to make sure a tea profile has been selected
+            @Override
+            public void onClick(View view) {
+                switch (teaTimerButton.getState()){
+                    case TIMER_FINISHED:
+                        break;
+
+                    //when clicked, start the timer
+                    case TIMER_NOT_RUNNING:
+                        teaProfileName.setText(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).name);
+                        teaBrewTime.setText(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).getMinutesAndSeconds());
+                        teaBrewStatus.setText(R.string.tea_status_brewing);
+                        teaTimerButton.setState(TIMER_RUNNING);
+                        break;
+
+                    case TIMER_PAUSED:
+                        teaTimerButton.setState(TIMER_RUNNING);
+                        teaBrewStatus.setText(R.string.tea_status_brewing);
+                        break;
+
+                    case TIMER_RUNNING:
+                        teaTimerButton.setState(TIMER_PAUSED);
+                        teaBrewStatus.setText(R.string.tea_status_pause);
+                        break;
+                }
+            }
+        });
+
+        //listens for long click user, used to reset the timer.
+        teaTimerButton.getButton().setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(teaTimerButton.getState() == TIMER_RUNNING ){ //only executes if the timer has already started running
+                    teaTimerButton.setState(TIMER_NOT_RUNNING);
+                    teaBrewStatus.setText(R.string.default_tea_status);
+
+                    return true;
+                }
+                return false;
             }
         });
     }
@@ -212,69 +269,5 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     //TODO add custom tea profile to database
     //TODO timer functionality
     //TODO start button functionality
-    
-    public class StartTimer{
-        Button timerButton;
-        int state;
-        private static final int TIMER_FINISHED = 0;
-        private static final int TIMER_RUNNING = 1;
-        private static final int TIMER_PAUSED = 2;
-        private static final int TIMER_NOT_RUNNING = 3;
-        public StartTimer(Button timerButton){
-            this.timerButton = timerButton;
-            addClickListener();
-        }
-
-        private void addClickListener(){
-            this.timerButton.setOnClickListener(new View.OnClickListener() {
-                //checks the state of the button onClick. Example: If the timer is not running (TIMER_NOT_RUNNING)
-                //then the click will start the timer and set the new button's state to TIMER_RUNNING
-                @Override
-                public void onClick(View view) {
-                    switch (StartTimer.this.state){
-                        case TIMER_FINISHED:
-                            break;
-                        case TIMER_RUNNING:
-                            break;
-                        case TIMER_PAUSED:
-                            break;
-                        case TIMER_NOT_RUNNING:
-                            StartTimer.this.setState(TIMER_RUNNING);
-                            StartTimer.this.timerButton.setText(R.string.btn_pause);
-                            break;
-                    }
-                }
-            });
-
-            this.timerButton.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-
-                    return true;
-                }
-            });
-        }
-
-        private void setState(int state){
-            this.state = state;
-        }
-
-        //getter methods for various states of button
-        public int TIMER_FINISHED(){
-            return TIMER_FINISHED;
-        }
-
-        public int TIMER_RUNNING(){
-            return TIMER_RUNNING;
-        }
-
-        public int TIMER_PAUSED(){
-            return TIMER_PAUSED;
-        }
-
-        public int TIMER_NOT_RUNNING(){
-            return TIMER_NOT_RUNNING;
-        }
-    }
 }
 
