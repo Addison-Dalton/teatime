@@ -2,6 +2,10 @@
     <string name="app_name">Tea Time</string>
     <string name="tea_profile"><u>Tea Profile</u></string>
     <string name="tea_status"><u>Status</u></string>
+    <string name="default_tea_status">Not Brewing</string>
+    <string name="tea_status_brewing">Brewing</string>
+    <string name="tea_status_pause">Paused</string>
+    <string name="tea_status_finished">Done!</string>
     <string name="time_remaining"><u>Brew Time</u></string>
     <string name="btn_start">Start</string>
     <string name="btn_pause">Pause/Stop</string>
@@ -18,4 +22,5 @@
     <string name="popup_time_label">(Brewing Time)</string>
     <string name="max_time_value">59</string>
     <string name="default_time_value">00</string>
+
 </resources>
