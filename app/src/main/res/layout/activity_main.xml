@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="18sp"
-                android:text="Green Tea" />
+                android:text="@string/default_tea_profile" />
         </LinearLayout>
 
         <LinearLayout
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="18sp"
-                android:text="5:00" />
+                android:text="@string/default_time" />
 
         </LinearLayout>
     </LinearLayout>
