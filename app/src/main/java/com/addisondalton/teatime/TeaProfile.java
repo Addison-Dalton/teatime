@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 public class TeaProfile extends SugarRecord<TeaProfile> {
     String name;
-    int milliseconds;
+    long milliseconds;
 
     //default constructor
     public TeaProfile(){
