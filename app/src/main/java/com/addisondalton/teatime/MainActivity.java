@@ -2,6 +2,7 @@ package com.addisondalton.teatime;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -19,6 +20,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
 import static com.addisondalton.teatime.TimerButton.TIMER_FINISHED;
 import static com.addisondalton.teatime.TimerButton.TIMER_NOT_RUNNING;
 import static com.addisondalton.teatime.TimerButton.TIMER_PAUSED;
@@ -26,6 +30,10 @@ import static com.addisondalton.teatime.TimerButton.TIMER_RUNNING;
 
 public class MainActivity extends AppCompatActivity implements SpinnerClickListener {
     TeaProfileAdapter teaProfileAdapter;
+    CountDownTimer teaTimer;
+    long millisecondsRemaining;
+    final static int TICK_INTERVAL = 100;
+    TimerButton teaTimerButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
 
         //new TimerButton, takes a button as parameter in constructor.
         //this class simply keeps up with the various states the timer button can be in.
-        final TimerButton teaTimerButton = new TimerButton((Button) findViewById(R.id.btn_timer));
+        teaTimerButton = new TimerButton((Button) findViewById(R.id.btn_timer));
         teaTimerButton.setState(TIMER_NOT_RUNNING);
         teaTimerButton.getButton().setOnClickListener(new View.OnClickListener() {
 
@@ -63,22 +71,33 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                     case TIMER_FINISHED:
                         break;
 
-                    //when clicked, start the timer
+                    //START TIMER CODE:
                     case TIMER_NOT_RUNNING:
                         teaProfileName.setText(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).name);
                         teaBrewTime.setText(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).getMinutesAndSeconds());
                         teaBrewStatus.setText(R.string.tea_status_brewing);
                         teaTimerButton.setState(TIMER_RUNNING);
+
+                        //start the timer
+                        runTimer(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).milliseconds);
                         break;
 
+                    //RESUME TIMER CODE:
                     case TIMER_PAUSED:
                         teaTimerButton.setState(TIMER_RUNNING);
                         teaBrewStatus.setText(R.string.tea_status_brewing);
+
+                        //resume the timer by passing milliseondsRemaining to runTimer()
+                        runTimer(millisecondsRemaining);
                         break;
 
+                    //PAUSE TIMER CODE:
                     case TIMER_RUNNING:
                         teaTimerButton.setState(TIMER_PAUSED);
                         teaBrewStatus.setText(R.string.tea_status_pause);
+
+                        //pause the timer by canceling it
+                        teaTimer.cancel();
                         break;
                 }
             }
@@ -89,9 +108,11 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
             @Override
             public boolean onLongClick(View view) {
                 if(teaTimerButton.getState() == TIMER_RUNNING ){ //only executes if the timer has already started running
+                    teaProfileName.setText(R.string.default_tea_profile);
                     teaTimerButton.setState(TIMER_NOT_RUNNING);
                     teaBrewStatus.setText(R.string.default_tea_status);
-
+                    teaBrewTime.setText(R.string.default_time);
+                    teaTimer.cancel();
                     return true;
                 }
                 return false;
@@ -125,6 +146,36 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         teaProfileSpinner.onDetachedFromWindow();
         final int position = (int) view.getTag(R.string.spinner_index_tag);
         teaProfileSpinner.setSelection(position);
+    }
+
+    //creates a new instance of CountDownTimer, keeps the remaining milliseconds remaining in
+    //millisecondsRemaining, and updates the brewing time on screen.
+    private void runTimer(final long milliseconds){
+        final TextView teaBrewTime =  findViewById(R.id.tv_time_remaining_value);
+        final TextView teaStatus = findViewById(R.id.tv_tea_status_value);
+        teaTimer = new CountDownTimer(milliseconds, TICK_INTERVAL) {
+            @Override
+            public void onTick(long l) {
+                millisecondsRemaining = l;
+                teaBrewTime.setText(getMinutesAndSeconds(l));
+            }
+
+            @Override
+            public void onFinish() {
+                teaTimer.cancel();
+                teaBrewTime.setText(R.string.time_end_value); //the last tick doesn't execute, so this will set the text to 0:00
+                teaStatus.setText(R.string.tea_status_finished);
+                teaTimerButton.setState(TIMER_NOT_RUNNING);
+
+            }
+        }.start();
+    }
+
+    //converts milliseconds into a String formatted as minutes and seconds, MM:SS
+    private String getMinutesAndSeconds(long milliseconds){
+        return String.format(Locale.US, "%2d:%02d", TimeUnit.MILLISECONDS.toMinutes(milliseconds),
+                TimeUnit.MILLISECONDS.toSeconds(milliseconds) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
     }
 
     //method that add all the default tea profiles to the sugar orm database
@@ -266,8 +317,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     //MAJOR ITEMS
     //TODO fiddle with how I want the text to react with the delete button present. May just hide text altogether.
     //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
-    //TODO add custom tea profile to database
-    //TODO timer functionality
-    //TODO start button functionality
+    //TODO tea image needs to slowly 'fill'
+    //TODO should you be able to delete default teas? If so, should they be readded?
+    //TODO I need to decide what to do about text that doesn't fit.
 }
 
