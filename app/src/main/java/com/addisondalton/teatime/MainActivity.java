@@ -2,6 +2,7 @@ package com.addisondalton.teatime;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.graphics.drawable.ClipDrawable;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -32,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     TeaProfileAdapter teaProfileAdapter;
     CountDownTimer teaTimer;
     long millisecondsRemaining;
+    int drawableLevel = 0;
+    long initialMilliseconds;
     final static int TICK_INTERVAL = 100;
     TimerButton teaTimerButton;
     @Override
@@ -79,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                         teaTimerButton.setState(TIMER_RUNNING);
 
                         //start the timer
+                        initialMilliseconds = teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).milliseconds;
                         runTimer(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).milliseconds);
                         break;
 
@@ -113,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                     teaBrewStatus.setText(R.string.default_tea_status);
                     teaBrewTime.setText(R.string.default_time);
                     teaTimer.cancel();
+                    initialMilliseconds = 0;
                     return true;
                 }
                 return false;
@@ -158,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
             public void onTick(long l) {
                 millisecondsRemaining = l;
                 teaBrewTime.setText(getMinutesAndSeconds(l));
+                updateImage(l);
             }
 
             @Override
@@ -165,10 +172,27 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                 teaTimer.cancel();
                 teaBrewTime.setText(R.string.time_end_value); //the last tick doesn't execute, so this will set the text to 0:00
                 teaStatus.setText(R.string.tea_status_finished);
-                teaTimerButton.setState(TIMER_NOT_RUNNING);
+                teaTimerButton.setState(TIMER_NOT_RUNNING); //TODO this actually needs to set a timer_finished state
 
             }
         }.start();
+    }
+
+    private void updateImage(long currentMilliseconds){
+
+        float ratio = (float) currentMilliseconds / (float) initialMilliseconds;
+
+        float levelValue = 10000 - (10000 * ratio);
+        //Log.i("CM: ", Long.toString(currentMilliseconds));
+        //Log.i("IM: ", Long.toString(initialMilliseconds));
+
+        Log.i("ratio: ", Double.toString(ratio));
+        Log.i("levelValue: ", Double.toString(levelValue));
+
+        ImageView img = findViewById(R.id.iv_tea_image);
+        ClipDrawable imageDrawable = (ClipDrawable) img.getDrawable();
+
+        imageDrawable.setLevel((int) levelValue);
     }
 
     //converts milliseconds into a String formatted as minutes and seconds, MM:SS
