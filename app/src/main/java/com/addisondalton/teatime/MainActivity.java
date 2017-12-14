@@ -72,7 +72,11 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
             @Override
             public void onClick(View view) {
                 switch (teaTimerButton.getState()){
+                    //TIMER FINISHED CODE:
                     case TIMER_FINISHED:
+                        teaTimerButton.setState(TIMER_NOT_RUNNING);
+                        resetTimer();
+                        //TODO stop alarm sound
                         break;
 
                     //START TIMER CODE:
@@ -113,12 +117,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
             @Override
             public boolean onLongClick(View view) {
                 if(teaTimerButton.getState() == TIMER_RUNNING ){ //only executes if the timer has already started running
-                    teaProfileName.setText(R.string.default_tea_profile);
-                    teaTimerButton.setState(TIMER_NOT_RUNNING);
-                    teaBrewStatus.setText(R.string.default_tea_status);
-                    teaBrewTime.setText(R.string.default_time);
-                    teaTimer.cancel();
-                    initialMilliseconds = 0;
+                    resetTimer();
                     return true;
                 }
                 return false;
@@ -172,10 +171,27 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                 teaTimer.cancel();
                 teaBrewTime.setText(R.string.time_end_value); //the last tick doesn't execute, so this will set the text to 0:00
                 teaStatus.setText(R.string.tea_status_finished);
-                teaTimerButton.setState(TIMER_NOT_RUNNING); //TODO this actually needs to set a timer_finished state
+                teaTimerButton.setState(TIMER_FINISHED);
+                //TODO alarm sound
 
             }
         }.start();
+    }
+
+    private void resetTimer(){
+        final TextView teaProfileName = findViewById(R.id.tv_tea_profile_value);
+        final TextView teaBrewTime = findViewById(R.id.tv_time_remaining_value);
+        final TextView teaBrewStatus = findViewById(R.id.tv_tea_status_value);
+        ImageView img = findViewById(R.id.iv_tea_image);
+        ClipDrawable imageDrawable = (ClipDrawable) img.getDrawable();
+
+        imageDrawable.setLevel(0);
+        teaProfileName.setText(R.string.default_tea_profile);
+        teaTimerButton.setState(TIMER_NOT_RUNNING);
+        teaBrewStatus.setText(R.string.default_tea_status);
+        teaBrewTime.setText(R.string.default_time);
+        teaTimer.cancel();
+        initialMilliseconds = 0;
     }
 
     private void updateImage(long currentMilliseconds){
@@ -183,15 +199,9 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         float ratio = (float) currentMilliseconds / (float) initialMilliseconds;
 
         float levelValue = 10000 - (10000 * ratio);
-        //Log.i("CM: ", Long.toString(currentMilliseconds));
-        //Log.i("IM: ", Long.toString(initialMilliseconds));
-
-        Log.i("ratio: ", Double.toString(ratio));
-        Log.i("levelValue: ", Double.toString(levelValue));
 
         ImageView img = findViewById(R.id.iv_tea_image);
         ClipDrawable imageDrawable = (ClipDrawable) img.getDrawable();
-
         imageDrawable.setLevel((int) levelValue);
     }
 
@@ -341,8 +351,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     //MAJOR ITEMS
     //TODO fiddle with how I want the text to react with the delete button present. May just hide text altogether.
     //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
-    //TODO tea image needs to slowly 'fill'
-    //TODO should you be able to delete default teas? If so, should they be readded?
+    //TODO should you be able to delete default teas? If so, should they be re-added?
     //TODO I need to decide what to do about text that doesn't fit.
 }
 

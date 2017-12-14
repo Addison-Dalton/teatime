@@ -11,6 +11,7 @@
     <string name="btn_start">Start</string>
     <string name="btn_pause">Pause/Stop</string>
     <string name="btn_resume">Resume</string>
+    <string name="btn_stop">Stop</string>
     <string name="btn_delete">Delete</string>
     <string name="spinner_index_tag"></string>
     <string name="btn_add_tea_profile">+</string>

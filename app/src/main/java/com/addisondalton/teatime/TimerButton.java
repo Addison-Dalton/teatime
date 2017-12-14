@@ -26,7 +26,7 @@ public class TimerButton {
 
         switch (this.state){
             case TIMER_FINISHED:
-                this.timerButton.setText(R.string.btn_start);
+                this.timerButton.setText(R.string.btn_stop);
                 break;
 
             case TIMER_RUNNING:
