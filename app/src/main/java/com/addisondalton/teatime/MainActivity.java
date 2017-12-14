@@ -55,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         final TextView teaBrewTime = findViewById(R.id.tv_time_remaining_value);
         final TextView teaBrewStatus = findViewById(R.id.tv_tea_status_value);
 
+        teaProfileName.setSelected(true);
+
         showAddTeaProfilePopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -352,6 +354,5 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     //TODO fiddle with how I want the text to react with the delete button present. May just hide text altogether.
     //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
     //TODO should you be able to delete default teas? If so, should they be re-added?
-    //TODO I need to decide what to do about text that doesn't fit.
 }
 

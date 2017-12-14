@@ -39,6 +39,10 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="18sp"
+                android:singleLine="true"
+                android:scrollHorizontally="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
                 android:text="@string/default_tea_profile" />
         </LinearLayout>
 

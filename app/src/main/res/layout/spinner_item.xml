@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="250dp"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_margin="16dp">
 
@@ -16,15 +17,18 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:singleLine="true"
-            android:text="Black Tea"
+            android:scrollHorizontally="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:text="TTTTTTTTTTTTTTTTTTTTTT"
             android:textSize="20sp" />
 
-        <Button
+        <android.support.v7.widget.AppCompatButton
             android:id="@+id/btn_delete"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:layout_gravity="end|center_vertical"
-            android:backgroundTint="@color/deleteButton"
+            app:backgroundTint="@color/deleteButton"
             android:text="@string/btn_delete"
             android:textSize="20sp"
             android:visibility="gone" />
