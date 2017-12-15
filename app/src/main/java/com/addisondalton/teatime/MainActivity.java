@@ -3,12 +3,14 @@ package com.addisondalton.teatime;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ClipDrawable;
 import android.media.AudioManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutCompat;
@@ -58,11 +60,15 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /**
-        //only add the default tea profiles if there are no tea profiles
-        if(TeaProfile.listAll(TeaProfile.class).isEmpty()){
-            setDefaultTeaProfiles(); //adds stored teas to database //TODO consider renaming
-        } */
+        //This will run only once and load the tea profile database with the default teas.
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if(!preferences.getBoolean("defaultTeas", false)){
+            setDefaultTeaProfiles();
+
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putBoolean("defaultTeas", true);
+            editor.apply();
+        }
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         setTeaProfileAdapter();
@@ -267,10 +273,11 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
 
     //method that add all the default tea profiles to the sugar orm database
     private void setDefaultTeaProfiles(){
-        new TeaProfile("Black Tea", 60000).save();
-        new TeaProfile("Green Tea", 30000).save();
-        new TeaProfile("Flavored Black Tea",60000).save();
-        new TeaProfile("Herbal Tea", 60000).save();
+        new TeaProfile("Black Tea", 300000).save();
+        new TeaProfile("Green Tea", 180000).save();
+        new TeaProfile("White Tea", 60000).save();
+        new TeaProfile("Earl Grey Tea",240000).save();
+        new TeaProfile("Herbal Tea", 300000).save();
     }
 
     //populates the spinner with items from a list of all tea profiles,
