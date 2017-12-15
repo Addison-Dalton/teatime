@@ -59,6 +59,7 @@ public class TeaProfileAdapter extends ArrayAdapter<TeaProfile> {
 
         TextView tv_teaProfile = convertView.findViewById(R.id.tv_spinner_tea_item);
         tv_teaProfile.setText(teaProfileString);
+        tv_teaProfile.setSelected(true);
 
         //sets the tag of the convertView as the position in the spinner of the tea profile.
         //the tag is later called to figure which tea profile is being selected

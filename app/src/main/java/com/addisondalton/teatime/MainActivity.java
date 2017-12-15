@@ -17,8 +17,10 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -69,9 +71,19 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         final TextView teaBrewTime = findViewById(R.id.tv_time_remaining_value);
         final TextView teaBrewStatus = findViewById(R.id.tv_tea_status_value);
 
+        //used for scrolling text if the text is too long to fit within the TextView
         teaProfileName.setSelected(true);
 
-
+        //this resets the spinner everytime it's opened.
+        //this is done to hide any delete buttons that where previously visible.
+        teaProfileSpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                setTeaProfileAdapter();
+                return false;
+            }
+        });
+        //clickListener for the Add Tea Profile button
         showAddTeaProfilePopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,7 +168,6 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
 
         //if the delete button is not visible, then show it and handle click events on the delete button
         if(deleteButton.getVisibility() == View.GONE){
-            view.findViewById(R.id.tv_spinner_tea_item).animate().xBy(-170f).setDuration(250);
             deleteButton.setVisibility(View.VISIBLE);
             deleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -164,9 +175,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                     deleteTeaProfile(teaProfileAdapter.getItem(position));
                 }
             });
-        }else{
+        }else{ //if the delete button is visible, then hide it and move the TextView back to it's original place
             deleteButton.setVisibility(View.GONE);
-            view.findViewById(R.id.tv_spinner_tea_item).animate().xBy(170f).setDuration(250);
         }
     }
 
@@ -178,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         final int position = (int) view.getTag(R.string.spinner_index_tag);
         teaProfileSpinner.setSelection(position);
     }
+
 
     //creates a new instance of CountDownTimer, keeps the remaining milliseconds remaining in
     //millisecondsRemaining, and updates the brewing time on screen.
@@ -376,16 +387,6 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         setTeaProfileAdapter();
     }
 
-    //sets the text for the TextViews associated with showing the tea profile's name and brew time.
-    //this is called when the user starts the timer
-    /**
-    private void displayTeaProfile(String teaName, String time){
-        TextView teaProfileSelected = findViewById(R.id.tv_tea_profile_value);
-        TextView brewTime = findViewById(R.id.tv_time_remaining_value);
-
-        teaProfileSelected.setText(teaName);
-        brewTime.setText(time);
-    } */
     //MAJOR ITEMS
     //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
     //TODO consider still finding a way for text to scroll inside the spinner

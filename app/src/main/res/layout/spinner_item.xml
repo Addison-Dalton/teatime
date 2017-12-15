@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
+    android:layout_width="220dp"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_margin="16dp">
 
-    <FrameLayout
-    android:layout_width="220dp"
-    android:layout_height="match_parent"
-        android:layout_margin="16dp">
+    <TextView
+        android:id="@+id/tv_spinner_tea_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:paddingTop="11dp"
+        android:paddingBottom="11dp"
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:text="Green Tea"
+        android:textSize="20sp" />
 
-        <TextView
-            android:id="@+id/tv_spinner_tea_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:singleLine="true"
-            android:scrollHorizontally="true"
-            android:ellipsize="marquee"
-            android:marqueeRepeatLimit="marquee_forever"
-            android:text="TTTTTTTTTTTTTTTTTTTTTT"
-            android:textSize="20sp" />
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_gravity="end|center_vertical"
-            app:backgroundTint="@color/deleteButton"
-            android:text="@string/btn_delete"
-            android:textSize="20sp"
-            android:visibility="gone" />
-    </FrameLayout>
-
-
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/btn_delete"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="end|center_vertical"
+        android:layout_weight="1"
+        app:backgroundTint="@color/deleteButton"
+        android:text="@string/btn_delete"
+        android:textSize="20sp"
+        android:visibility="gone" />
 </LinearLayout>
