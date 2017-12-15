@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Owner on 12/4/2017.
+ * This class extends SugarRecord from SugarORM to store a tea profile as an entity in a database.
  */
 
 public class TeaProfile extends SugarRecord<TeaProfile> {

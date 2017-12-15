@@ -8,9 +8,8 @@ import android.util.AttributeSet;
 import android.widget.Spinner;
 
 /**
- * Created by Owner on 12/5/2017.
+ * This class is from a user named yajnesh on stackoverflow.
  */
-
 public class LongClickSpinner extends AppCompatSpinner {
     public LongClickSpinner(Context context, int mode){
         super(context, mode);

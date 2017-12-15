@@ -11,7 +11,8 @@ import android.widget.TextView;
 import java.util.List;
 
 /**
- * Created by Owner on 12/5/2017.
+ * The sections of this class pertaining to setOnClickListener and setOnLongClickListener were
+ * adapted from code given by a user from stackoverflow. His username is yajnesh.
  */
 
 public class TeaProfileAdapter extends ArrayAdapter<TeaProfile> {

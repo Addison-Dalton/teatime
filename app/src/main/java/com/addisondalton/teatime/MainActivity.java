@@ -30,11 +30,15 @@ import static com.addisondalton.teatime.TimerButton.TIMER_NOT_RUNNING;
 import static com.addisondalton.teatime.TimerButton.TIMER_PAUSED;
 import static com.addisondalton.teatime.TimerButton.TIMER_RUNNING;
 
+/**
+ * The onItemClicked and onItemLongClicked methods are from the user yajnesh on stackoverflow.
+ * SugarORM is used store tea profiles in a database. http://satyan.github.io/sugar/index.html
+ */
+
 public class MainActivity extends AppCompatActivity implements SpinnerClickListener {
     TeaProfileAdapter teaProfileAdapter;
     CountDownTimer teaTimer;
     long millisecondsRemaining;
-    int drawableLevel = 0;
     long initialMilliseconds;
     final static int TICK_INTERVAL = 100;
     TimerButton teaTimerButton;
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
 
         teaProfileName.setSelected(true);
 
+
         showAddTeaProfilePopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,13 +69,13 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
             }
         });
 
+
         //new TimerButton, takes a button as parameter in constructor.
         //this class simply keeps up with the various states the timer button can be in.
         teaTimerButton = new TimerButton((Button) findViewById(R.id.btn_timer));
         teaTimerButton.setState(TIMER_NOT_RUNNING);
         teaTimerButton.getButton().setOnClickListener(new View.OnClickListener() {
 
-            //TODO probably need to add checks to make sure a tea profile has been selected
             @Override
             public void onClick(View view) {
                 switch (teaTimerButton.getState()){
@@ -83,14 +88,18 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
 
                     //START TIMER CODE:
                     case TIMER_NOT_RUNNING:
-                        teaProfileName.setText(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).name);
-                        teaBrewTime.setText(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).getMinutesAndSeconds());
-                        teaBrewStatus.setText(R.string.tea_status_brewing);
-                        teaTimerButton.setState(TIMER_RUNNING);
+                       try { //catch when there are no tea profiles in the spinner which would produce a ArrayIndexOutOfBoundsException
+                           teaProfileName.setText(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).name);
+                           teaBrewTime.setText(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).getMinutesAndSeconds());
+                           teaBrewStatus.setText(R.string.tea_status_brewing);
+                           teaTimerButton.setState(TIMER_RUNNING);
 
-                        //start the timer
-                        initialMilliseconds = teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).milliseconds;
-                        runTimer(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).milliseconds);
+                           //start the timer
+                           initialMilliseconds = teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).milliseconds;
+                           runTimer(teaProfileAdapter.getItem(teaProfileSpinner.getSelectedItemPosition()).milliseconds);
+                       } catch (ArrayIndexOutOfBoundsException e){//alert the user that there is no tea profile in the spinner
+                           Toast.makeText(getApplicationContext(), "You have no tea selected. Click the '+' button to add one. ",Toast.LENGTH_SHORT).show();
+                       }
                         break;
 
                     //RESUME TIMER CODE:
@@ -131,19 +140,23 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     //button to delete the profile
     @Override
     public void onItemLongClicked(final View view){
-        LongClickSpinner teaProfileSpinner = findViewById(R.id.spinner_tea_profiles);
         final Button deleteButton = view.findViewById(R.id.btn_delete);
         final int position = (int) view.getTag(R.string.spinner_index_tag);
 
-        view.findViewById(R.id.tv_spinner_tea_item).animate().xBy(-170f).setDuration(250); //TODO fiddle with this animation
-        deleteButton.setVisibility(View.VISIBLE);
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteTeaProfile(teaProfileAdapter.getItem(position));
-            }
-        });
-
+        //if the delete button is not visible, then show it and handle click events on the delete button
+        if(deleteButton.getVisibility() == View.GONE){
+            view.findViewById(R.id.tv_spinner_tea_item).animate().xBy(-170f).setDuration(250);
+            deleteButton.setVisibility(View.VISIBLE);
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteTeaProfile(teaProfileAdapter.getItem(position));
+                }
+            });
+        }else{
+            deleteButton.setVisibility(View.GONE);
+            view.findViewById(R.id.tv_spinner_tea_item).animate().xBy(170f).setDuration(250);
+        }
     }
 
     //detects a normal click on an item and sets it as the spinner's selected item
@@ -343,16 +356,17 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
 
     //sets the text for the TextViews associated with showing the tea profile's name and brew time.
     //this is called when the user starts the timer
+    /**
     private void displayTeaProfile(String teaName, String time){
         TextView teaProfileSelected = findViewById(R.id.tv_tea_profile_value);
         TextView brewTime = findViewById(R.id.tv_time_remaining_value);
 
         teaProfileSelected.setText(teaName);
         brewTime.setText(time);
-    }
+    } */
     //MAJOR ITEMS
-    //TODO fiddle with how I want the text to react with the delete button present. May just hide text altogether.
     //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
     //TODO should you be able to delete default teas? If so, should they be re-added?
+    //TODO add alarm sound
 }
 
