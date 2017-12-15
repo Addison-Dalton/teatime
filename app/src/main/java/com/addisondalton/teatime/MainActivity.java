@@ -398,8 +398,5 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         new TeaProfile(teaName, milliseconds).save();
         setTeaProfileAdapter();
     }
-
-    //MAJOR ITEMS
-    //TODO how to add default teas only once.
 }
 
