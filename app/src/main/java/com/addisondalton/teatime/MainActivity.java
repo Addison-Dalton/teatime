@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     long millisecondsRemaining;
     long initialMilliseconds;
     final static int TICK_INTERVAL = 100;
+    final static int MAX_TEA_PROFILES = 25;
     TimerButton teaTimerButton;
     AudioManager audioManager;
     Ringtone alarmSound;
@@ -87,7 +88,11 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
         showAddTeaProfilePopup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopup();
+                if(teaProfileAdapter.getCount() <= MAX_TEA_PROFILES){ //show the Add Tea Profile popup window if the maximum of profiles hasn't been met.
+                    showPopup();
+                }else{ //alert the user that they have reached their maximum tea profiles.
+                    Toast.makeText(getApplicationContext(), "You can't add anymore tea profiles, consider deleting some to add more.",Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -388,7 +393,6 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     }
 
     //MAJOR ITEMS
-    //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
-    //TODO consider still finding a way for text to scroll inside the spinner
+    //TODO how to add default teas only once.
 }
 
