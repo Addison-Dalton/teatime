@@ -2,7 +2,12 @@ package com.addisondalton.teatime;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.ClipDrawable;
+import android.media.AudioManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -42,16 +47,21 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     long initialMilliseconds;
     final static int TICK_INTERVAL = 100;
     TimerButton teaTimerButton;
+    AudioManager audioManager;
+    Ringtone alarmSound;
+    int userVolume;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /**
         //only add the default tea profiles if there are no tea profiles
         if(TeaProfile.listAll(TeaProfile.class).isEmpty()){
             setDefaultTeaProfiles(); //adds stored teas to database //TODO consider renaming
-        }
+        } */
 
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         setTeaProfileAdapter();
         Button showAddTeaProfilePopup = findViewById(R.id.btn_show_add_tea_profile_popup);
         final Spinner teaProfileSpinner = findViewById(R.id.spinner_tea_profiles);
@@ -83,7 +93,8 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                     case TIMER_FINISHED:
                         teaTimerButton.setState(TIMER_NOT_RUNNING);
                         resetTimer();
-                        //TODO stop alarm sound
+                        alarmSound.stop();
+                        audioManager.setStreamVolume(AudioManager.STREAM_RING, userVolume, 0 );
                         break;
 
                     //START TIMER CODE:
@@ -187,7 +198,18 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
                 teaBrewTime.setText(R.string.time_end_value); //the last tick doesn't execute, so this will set the text to 0:00
                 teaStatus.setText(R.string.tea_status_finished);
                 teaTimerButton.setState(TIMER_FINISHED);
-                //TODO alarm sound
+
+                //alarm sound
+                try{
+                    userVolume = audioManager.getStreamVolume(AudioManager.STREAM_RING); //holds the users volume before this app sets it to max.
+                    audioManager.setStreamVolume(AudioManager.STREAM_RING, audioManager.getStreamMaxVolume(AudioManager.STREAM_RING), 0);
+                    String uri = "android.resource://" + getPackageName() + "/" + R.raw.alarm_sound;
+                    Uri alarm = Uri.parse(uri);
+                    alarmSound = RingtoneManager.getRingtone(getApplicationContext(), alarm);
+                    alarmSound.play();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
             }
         }.start();
@@ -366,7 +388,6 @@ public class MainActivity extends AppCompatActivity implements SpinnerClickListe
     } */
     //MAJOR ITEMS
     //TODO Whatever I do to text, when the user clicks off the delete button and text should return to normal if the user did not delete the profile
-    //TODO should you be able to delete default teas? If so, should they be re-added?
-    //TODO add alarm sound
+    //TODO consider still finding a way for text to scroll inside the spinner
 }
 
