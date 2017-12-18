@@ -3,7 +3,16 @@ package com.addisondalton.teatime;
 import android.widget.Button;
 
 /**
- * Created by Owner on 12/10/2017.
+ * This class handles the switching of states within a button that controls a timer.(A CountdownTimer for this app).
+ * This is done by holding the button's state within the state parameter, and by setting the button's text to reflect the state it is in.
+ * The states are:
+ * TIMER_FINISH - When the timer has finished.
+ * TIMER_RUNNING - When the timer is actively running.
+ * TIMER_PAUSED - When the timer has been paused.
+ * TIMER_NOT_RUNNING - When the timer is not running. This either occurs at the start of the app, or right after TIMER_FINISH.
+ *
+ * It should be noted that the states handle code different then what their name implies.
+ * For example, TIMER_RUNNING will set the button's text to 'PAUSE/STOP' because when the timer is running, the button should show the text to pause it.
  */
 
 public class TimerButton {
